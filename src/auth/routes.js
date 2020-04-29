@@ -2,7 +2,9 @@ const express = require('express');
 const authRouter = express.Router();
 
 const User = require('./users-model.js');
+const oauth = require('../middleware/oauth-middleware.js');
 const basicAuth = require('../middleware/basic-auth-middleware.js');
+
 
 authRouter.post('/signup', async function(req, res, next){
   // let userExists = await User.find({
@@ -29,5 +31,10 @@ authRouter.post('/signup', async function(req, res, next){
   authRouter.get('/users', basicAuth, (req, res) => {
     res.status(200).send(users.list());
   });
+
+  // this is our "redirect_uri"
+authRouter.get('/oauth', oauth, (req, res) => {
+  res.status(200).send(req.token);
+});
 
   module.exports = authRouter;
