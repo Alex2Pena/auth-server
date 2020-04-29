@@ -20,18 +20,26 @@ users.pre('save', async function(record) {
   if (this.isModified('password')){
     this.password = await bcrypt.hash(this.password, 10)
   }
-})
+});
 
 // username:pw -> req.headers.authorization
 // decode username:pw
 // check that the decoded pw is the same as the hashed one in the db
 // if so, give me back the user
+
 users.statics.authenticateBasic = function(user, password) {
-  let query = {user}
-  return this.findone(query)
-    .then(user => user && user.comparePassword(password))
+  let query = {userName: user}
+  return this.find(query)
+    .then(async function (dbUser){
+      console.log('dbUser password:', dbUser[0].password);
+      // dbUser && dbUser.comparePassword(password)
+      let isValid = await bcrypt.compare(password, dbUser[0].password);
+      console.log('isvalid:', isValid);
+      return isValid ? user : Promise.reject();
+    })
     .catch(console.error);
 }
+
 
 users.methods.comparePassword = function(password) {
   return bcrypt.compare(password, this.password)
@@ -40,11 +48,9 @@ users.methods.comparePassword = function(password) {
 
 // if the user has proper login creds
 // generate a token that will be used in the future for accessing routes in our app
-users.methods.generateToken = function() {
-  let tokenData = { 
-    id: this._id,
-  };
-  return jwt.sign(tokenData, process.env.SECRET || 'Whattttttttttttt')
+users.statics.generateToken = function(dbUser) {
+  console.log('dbUser:', dbUser);
+  return jwt.sign({userName: dbUser},'Whattttttttttttt');
 };
 
 

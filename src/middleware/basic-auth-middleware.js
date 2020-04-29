@@ -17,8 +17,12 @@ module.exports = (req, res, next) => {
 
   users.authenticateBasic(user, pass)
     .then(validUser => {
+      console.log('validUser:', validUser);
       req.token = users.generateToken(validUser);
       next();
     })
-    .catch(err => next('invalid login details'));
+    .catch(err => {
+      console.log(err); 
+      next('invalid login details');
+      });
 }
