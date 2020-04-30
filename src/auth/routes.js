@@ -3,6 +3,7 @@ const authRouter = express.Router();
 
 const User = require('./users-model.js');
 const oauth = require('../middleware/oauth-middleware.js');
+const bearerAuth = require('../middleware/barer-auth-middleware');
 const basicAuth = require('../middleware/basic-auth-middleware.js');
 
 
@@ -23,7 +24,7 @@ authRouter.post('/signup', async function(req, res, next){
         .catch(next);
   });
   
-  authRouter.post('/signin', basicAuth, (req, res) => {
+authRouter.post('/signin', basicAuth, (req, res) => {
     // req.token only exists because of our basic auth middleware
     res.status(200).send(req.token);
   });
@@ -37,4 +38,6 @@ authRouter.get('/oauth', oauth, (req, res) => {
   res.status(200).send(req.token);
 });
 
+
+authRouter.get('')
   module.exports = authRouter;

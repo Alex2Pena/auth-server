@@ -3,8 +3,8 @@ const users = require('../auth/users-model');
 require('dotenv').config();
 
 // these are the required creds (some private - some public) for login/signup with a 3rd party service - OAuth
-const tokenServerUrl = 'https://github.com/login/oauth/access_token';
-const remoteAPI = 'https://api.github.com/user';
+const tokenServerUrl = 'https://github.com/login/oauth/access_token'; //API endpoint for getting token
+const remoteAPI = 'https://api.github.com/user';// take the token and make a request to this end point
 const CLIENT_ID = '3f00e402acac7af982ea'; // process.env.CLIENT_ID goes here - this lives in the associated .env file
 const CLIENT_SECRET = process.env.CLIENT_SECRET; // process.env.CLIENT_SECRET goes here - this lives in the associated .env file
 const API_SERVER = 'http://localhost:3000/oauth';
