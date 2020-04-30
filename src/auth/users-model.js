@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-let SECRET = 'appsecret'; // this is used as part of jwt for extra auth layers
+let SECRET = process.env.APP_SECRET; // this is used as part of jwt for extra auth layers
 
 // here is where you need to focus your lab assignment requirements -> you need mongoose/mongo
 
@@ -40,18 +40,35 @@ users.statics.authenticateBasic = function(user, password) {
     .catch(console.error);
 }
 
-
 users.methods.comparePassword = function(password) {
   return bcrypt.compare(password, this.password)
   .then(valid => valid ? this : null);
 }
 
+users.statics.authenticateToken = async function(token){
+  try {
+    let tokenObject = jwt.verify(token, SECRET);
+
+    if (dbUser[tokenObject.username]){
+      return Promise.resolve(tokenObject);
+    } else {
+      return Promise.reject();
+    }
+  } catch (e){
+    return Promise.reject();
+  }
+}
+
+// return jwt.verify(token,SECRET); // basic alternative to above ! TSing
+
 // if the user has proper login creds
 // generate a token that will be used in the future for accessing routes in our app
 users.statics.generateToken = function(dbUser) {
   console.log('dbUser:', dbUser);
-  return jwt.sign({userName: dbUser},'Whattttttttttttt');
+  let token = jwt.sign({userName: dbUser},SECRET); // maybe dbuser.username?
+  return token;
 };
 
+users.statics.list = () => dbUser;
 
 module.exports = mongoose.model('users', users);
