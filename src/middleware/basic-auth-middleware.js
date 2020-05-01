@@ -1,7 +1,7 @@
 'use strict';
 
 const base64 = require('base-64');
-const users = require('../auth/users-model.js');
+const Users = require('../auth/users-model.js');
 
 module.exports = (req, res, next) => {
   // checking if the request contains auth headers - if not, tell the user they need to login with proper cred
@@ -15,10 +15,10 @@ module.exports = (req, res, next) => {
   // this is our base64 username and pw -> foisfo39:390u2034
   let [user, pass] = base64.decode(basic).split(':');
 
-  users.authenticateBasic(user, pass)
+  Users.authenticateBasic(user, pass)
     .then(validUser => {
       console.log('validUser:', validUser);
-      req.token = users.generateToken(validUser);
+      req.token = Users.generateToken(validUser);
       next();
     })
     .catch(err => {

@@ -7,37 +7,37 @@ const bearerAuth = require('../middleware/barer-auth-middleware');
 const basicAuth = require('../middleware/basic-auth-middleware.js');
 
 
-authRouter.post('/signup', async function(req, res, next){
-  // let userExists = await User.find({
-  //   userName: req.body.userName
-  // });
-  //   console.log('If a user exisit', userExists);
-  
-    let user = new User(req.body);
-      user.save()
-        .then(dbUser => {
-          console.log('******* I am a dbUser ******',dbUser);
-          req.token = user.generateToken();
-          req.user = user;
-          res.send(req.token);
-        })
-        .catch(next);
-  });
-  
-authRouter.post('/signin', basicAuth, (req, res) => {
-    // req.token only exists because of our basic auth middleware
-    res.status(200).send(req.token);
-  });
-  
-  authRouter.get('/users', basicAuth, (req, res) => {
-    res.status(200).send(users.list());
-  });
+authRouter.post('/signup', async (req, res, next) => {
 
-  // this is our "redirect_uri"
+  console.log('I am the req', req.body);
+  let user = new User(req.body);
+  user.save()
+    .then(dbUser => {
+      console.log('******* I am a dbUser ******', dbUser);
+      req.token = user.generateToken(dbUser);
+      req.user = user;
+      res.send(req.token);
+    })
+    .catch(next);
+});
+
+authRouter.post('/signin', basicAuth, (req, res) => {
+  // req.token only exists because of our basic auth middleware
+  res.status(200).send(req.token);
+});
+
+authRouter.get('/users', basicAuth, (req, res) => {
+  res.status(200).send(users.list());
+});
+
+// this is our "redirect_uri"
 authRouter.get('/oauth', oauth, (req, res) => {
   res.status(200).send(req.token);
 });
 
+authRouter.get('/bearer', bearerAuth, (req, res) => {
+  res.status(200).send(req.token);
+});
 
 authRouter.get('')
-  module.exports = authRouter;
+module.exports = authRouter;

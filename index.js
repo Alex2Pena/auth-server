@@ -10,6 +10,8 @@ const mongoOptions = {
     useUnifiedTopology: true,
     useCreateIndex: true
 }
+
+// Remember to ask why this gies first, hook?
 mongoose.connect(MONGODB_URI, mongoOptions);
 
 require('./src/app.js').start(process.env.PORT);
