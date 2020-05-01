@@ -8,14 +8,16 @@ const cors = require('cors');
 
 //middleware routes
 const router = require('./auth/routes.js');
+const extraRoutes = require('./auth/additional-routes.js')
 
 const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 
 // will parse the req body on post and put request
-app.use(router);
 app.use(express.json());
+app.use(router);
+app.use(extraRoutes);
 app.use(express.static('./public'));
 app.use(express.urlencoded({extended: true}));
 
